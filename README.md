@@ -87,3 +87,25 @@ Now let's capture some DNS traffic. We set our Wireshark filter to port 53.
 ![Figure 13](/img/capture13.png 'Figure 13')
 
 Is the above data encrypted? No. If it were, we would not be able to see the server whose DNS we need or the IP.
+
+## Capture and Analyze a Telnet Session
+
+telnet is a protocol that was built to access and manage devices remotely. its secure equivalent is SSH. here we will telnet to tty.sdf.org. Let's create an account first:
+
+![Figure 14](/img/capture14.png 'Figure 14')
+
+Telnet operates on port TCP 23. In Wireshark, we set a capture filter on port 23. We telnet to the server using Windows Powershell.
+
+![Figure 15](/img/capture15.png 'Figure 15')
+
+Note that telnet is not secure at all. If we right-click on the first packet in Wireshark, go to Follow and choose TCP Stream, you will see the exact output you saw earlier when we first logged in to our telnet session.
+
+![Figure 16](/img/capture16.png 'Figure 16')
+
+One thing to notice here is that my login name, 'seblex9', has every letter doubled, with the letters alternating between red and blue:
+
+![Figure 17](/img/capture17.png 'Figure 17')
+
+The red represents what we send to the server and the blue is what the server sends us back.
+
+What about the password? You'll notice that's only in red. Well, what telnet does is it echoes back to us everything we are supposed to see on our screen. But you'll recall when inputting a password in Unix based systems, you do not actually see what you're typing. In other words, the server never send our password back to us, so the letters are red to represent what we sent.
