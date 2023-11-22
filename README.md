@@ -10,7 +10,7 @@ If you've never heard of RADIUS, it's something you'd most likely find in the ba
 
 We'll use the public RADIUS server to capture and analyze traffic. Specifically, we will test the authentication and analyze the encrypted data inside.
 
-capture01.png
+![Figure 1](/img/capture01.png.png 'Figure 1')
 
 Since RADIUS operates on port 1812, let's set a filter in Wireshark to listen only on that port.
 
