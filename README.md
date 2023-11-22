@@ -55,3 +55,35 @@ This is not secure, as we can plainly see everything that has happened, unlike w
 Let's expand the first packet and drill down to HTTP and, below that, authorization. The base64 encoding of the password is there, which is insecure, as well as the original, incorrect password fully visible. We also have details of the client. In the successful request, similarly we see the correct password as well as the aforementioned details.
 
 capture10.png
+
+## HTTP Form-based Authentication and DNS
+
+Let's capture and analyze another HTTP example and then let's also look at the DNS traffic.
+
+Form-based authentication was created to address the problems of basic HTTP authentication. Form-based authentication uses the standard HTML form fields to pass the username and password values to the server. How does it do this?
+
+Instead of sending a GET request along with the credentials, it sends a POST request and passes the credentials in the body of the request. We will use this site for testing:
+
+capture11.png
+
+Above, you see the site is not secure, as it uses HTTP.
+
+Start capturing traffic in Wireshark filtered on port 80.
+
+In testing site, enter credentials.
+
+In the last example, we found the authentication inside the HTTP request. This time, we will find it in the HTML form fields.
+
+capture12.png
+
+But you may notice that now the username and password are plainly visible in cleartext - not even any base64 encoding this time. How is this more secure than HTTP?
+
+The answer is that form-based authentication was designed to be used with HTTPS. Since, with HTTPS, the entire packet is encrypted, there's no need to hide the credentials.
+
+On the flipside of this, this implies that entering your credentials in a form on a site that is not HTTPS is, needless to say, an absolutely no-go.
+
+Now let's capture some DNS traffic. We set our Wireshark filter to port 53.
+
+capture13.png
+
+Is the above data encrypted? No. If it were, we would not be able to see the server whose DNS we need or the IP.
