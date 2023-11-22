@@ -1,8 +1,25 @@
-# Wireshark
+# Wireshark Network Traffic Analysis
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Generating and Analyzing Traffic with RADIUS](#generating-and-analyzing-traffic-with-radius)
+- [Basic HTTP Authentication](#basic-http-authentication)
+- [HTTP Form-based Authentication and DNS](#http-form-based-authentication-and-dns)
+- [Capturing and Analyzing a Telnet Session](#capturing-and-analyzing-a-telnet-session)
+- [Capturing and Analyzing SSH Sessions](#capturing-and-analyzing-ssh-sessions)
+- [Basic HTTP Authentication](#basic-http-authentication)
+- [Generate, Capture, Analyze, and Decrypt HTTPS Traffic](#generate-capture-analyze-and-decrypt-https-traffic)
+- [Basic HTTP Authentication](#basic-http-authentication)
+- [Contact](#contact)
+
+## Introduction:
+
+This research project examines network traffic generated via different protocols using Wireshark. The study aims to provide comprehensive insights into the inner workings of network communication, focusing on authentication, encryption, and security protocols.
 
 ## Generating and Analyzing Traffic with RADIUS
 
-Today I'll be analyzing traffic generated with RADIUS, a network authentication protocol that runs in the application layer.
+Today, I'll be analyzing traffic generated with RADIUS, a network authentication protocol that runs in the application layer.
 
 If you've never heard of RADIUS, it's something you'd most likely find in the backend of company networks, managing access to resources like Wi-Fi and VPN services.
 
@@ -24,11 +41,13 @@ Examining the request, we see the username is visible and the password is encryp
 
 ![Figure 4](/img/capture04.png 'Figure 4')
 
-Inside Wireshark, We can set RADIUS protocol preferences to decrypt the password:
+Inside Wireshark, we can set RADIUS protocol preferences to decrypt the password:
 
 ![Figure 5](/img/capture05.png 'Figure 5')
 
 We have now generated and analyzed RADIUS traffic.
+
+[Back to Top](#table-of-contents)
 
 ## Basic HTTP Authentication
 
@@ -38,15 +57,15 @@ HTTP is, of course, the protocol through which servers and browsers communicate.
 
 As you see above, it is asking us for a username and a password and tell us the connection is not private, i.e. not secure. We will make two attempts: one with the wrong password, then one with the correct one. First, let's capture the traffic. We set our capture filter to port 80, where HTTP listens.
 
-capture07.png
+![Figure 7](/img/capture07.png 'Figure 7')
 
 The first time, we intentionally input the wrong password, '1234'. The signin dialog reappears, prompting for the correct one. Let's input the right password: 'password.' We receive this JSON object:
 
-![Figure 7](/img/capture07.png 'Figure 7')
+![Figure 8](/img/capture08.png 'Figure 8')
 
 Back in Wireshark, we see the first failed attempt, where we receive a 401 status code:
 
-![Figure 8](/img/capture08.png 'Figure 8')
+![Figure 9](/img/capture09.png 'Figure 9')
 
 We can also observe on the second, correct attempt, we receive a 201 status, meaning accepted.
 
@@ -55,6 +74,8 @@ This is not secure, as we can plainly see everything that has happened, unlike w
 Let's expand the first packet and drill down to HTTP and, below that, authorization. The base64 encoding of the password is there, which is insecure, as well as the original, incorrect password fully visible. We also have details of the client. In the successful request, similarly we see the correct password as well as the aforementioned details.
 
 ![Figure 10](/img/capture10.png 'Figure 10')
+
+[Back to Top](#table-of-contents)
 
 ## HTTP Form-based Authentication and DNS
 
@@ -80,7 +101,7 @@ But you may notice that now the username and password are plainly visible in cle
 
 The answer is that form-based authentication was designed to be used with HTTPS. Since, with HTTPS, the entire packet is encrypted, there's no need to hide the credentials.
 
-On the flipside of this, this implies that entering your credentials in a form on a site that is not HTTPS is, needless to say, an absolutely no-go.
+> Conversely, this implies that entering your credentials in a form on a site that is not HTTPS is, needless to say, an absolutely no-go.
 
 Now let's capture some DNS traffic. We set our Wireshark filter to port 53.
 
@@ -88,7 +109,9 @@ Now let's capture some DNS traffic. We set our Wireshark filter to port 53.
 
 Is the above data encrypted? No. If it were, we would not be able to see the server whose DNS we need or the IP.
 
-## Capture and Analyze a Telnet Session
+[Back to Top](#table-of-contents)
+
+## Capturing and Analyzing a Telnet Session
 
 telnet is a protocol that was built to access and manage devices remotely. its secure equivalent is SSH. here we will telnet to tty.sdf.org. Let's create an account first:
 
@@ -97,7 +120,6 @@ telnet is a protocol that was built to access and manage devices remotely. its s
 Telnet operates on port TCP 23. In Wireshark, we set a capture filter on port 23. We telnet to the server using Windows Powershell.
 
 ![Figure 15](/img/capture15.png 'Figure 15')
-![Figure 15](/img/resize.png 'Figure 15')
 
 Note that telnet is not secure at all. If we right-click on the first packet in Wireshark, go to Follow and choose TCP Stream, you will see the exact output you saw earlier when we first logged in to our telnet session.
 
@@ -111,11 +133,15 @@ The red represents what we send to the server and the blue is what the server se
 
 What about the password? You'll notice that's only in red. Well, what telnet does is it echoes back to us everything we are supposed to see on our screen. But you'll recall when inputting a password in Unix based systems, you do not actually see what you're typing. In other words, the server never send our password back to us, so the letters are red to represent what we sent.
 
+[Back to Top](#table-of-contents)
+
 ## Capturing and Analyzing SSH Sessions
 
 So far we have looked at unencrypted sources of traffic. Now let's look at encrypted, this means text is encrypted with an algorithm and a key, resulting in cyphertext which can only be viewed in its original form if it's decrypted with the correct key. This is the simplest form of encryption.
 
-This is brings to SSH. SSH is used for the same purpose as telnet, to access and manage devices remotely. Unlike telnet, it is secure. SSH uses port 22.
+This is brings to SSH. SSH is used for the same purpose
+
+as telnet, to access and manage devices remotely. Unlike telnet, it is secure. SSH uses port 22.
 
 SSH uses the security protocol CLS, same one that HTTPS uses. You may have heard of SSL. This is the deprecated version of CLS.
 
@@ -136,6 +162,8 @@ If we click on the row for our telnet session and click 'follow stream' on the b
 Doing the same with the SSH session, we see everything is encrypted:
 
 ![Figure 20](/img/capture20.png 'Figure 20')
+
+[Back to Top](#table-of-contents)
 
 ## Generate, Capture, Analyze, and Decrypt HTTPS Traffic
 
@@ -180,3 +208,11 @@ Click on it and choose 'follow stream':
 ![Figure 28](/img/capture28.png 'Figure 28')
 
 And as you see, everything has been unencrypted.
+
+[Back to Top](#table-of-contents)
+
+## Contact
+
+For further inquiries, professional networking, or in-depth discussions on network security and protocol analysis, please don't hesitate to connect with me on LinkedIn at linkedin.com/in/seblex.
+
+[Back to Top](#table-of-contents)
