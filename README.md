@@ -136,3 +136,47 @@ If we click on the row for our telnet session and click 'follow stream' on the b
 Doing the same with the SSH session, we see everything is encrypted:
 
 ![Figure 20](/img/capture20.png 'Figure 20')
+
+## Generate, Capture, Analyze, and Decrypt HTTPS Traffic
+
+HTTPS is HTTP over TLS. It operates on port 443.
+
+In Wireshark, we set a capture filter on port 443.
+
+After generating some random traffic and inspecting a packet, we see under the TLS section that we're using http-over-tls protocol, i.e. HTTPS. We also see all the information has been encrypted.
+
+![Figure 21](/img/capture21.png 'Figure 21')
+
+How would we decrypt this traffic in Wireshark? We will use a premaster secret key. Our browser, which is the client, will generate this premaster secret key and we will log it in an SSL key log file. The web server will then use this key to generate a master secret key that encrypts all traffic. Since we have our premaster key in the log file, we can pass it to Wireshark to decrypt the data.
+
+First, we set an environment variable in Windows so that we can instruct the browser to save this premaster secret key in a log file.
+
+![Figure 22](/img/capture22.png 'Figure 22')
+
+We now tell Wireshark to use our saved log file, ssh-keys.log by adding the log file path in the TLS protocol found under preferences:
+
+![Figure 23](/img/capture23.png 'Figure 23')
+
+Finally, let's capture the HTTPS traffic and test it. In Wireshark, we set a capture filter on port 443. In our browser, navigate to this page:
+
+![Figure 24](/img/capture24.png 'Figure 24')
+
+Back in Wireshark, we once again go to Statistics > Conversations.
+
+![Figure 25](/img/capture25.png 'Figure 25')
+
+There are quite a few conversations in there, so let's send a ping the server we connected to in order to identify our conversation with Simple Site above. In Windows command prompt:
+
+![Figure 26](/img/capture26.png 'Figure 26')
+
+We see the IP address begins with 185.199.
+
+Back in Wireshark, we look for the IP address.
+
+![Figure 27](/img/capture27.png 'Figure 27')
+
+Click on it and choose 'follow stream':
+
+![Figure 28](/img/capture28.png 'Figure 28')
+
+And as you see, everything has been unencrypted.
