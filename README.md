@@ -97,6 +97,7 @@ telnet is a protocol that was built to access and manage devices remotely. its s
 Telnet operates on port TCP 23. In Wireshark, we set a capture filter on port 23. We telnet to the server using Windows Powershell.
 
 ![Figure 15](/img/capture15.png 'Figure 15')
+![Figure 15](/img/resize.png 'Figure 15')
 
 Note that telnet is not secure at all. If we right-click on the first packet in Wireshark, go to Follow and choose TCP Stream, you will see the exact output you saw earlier when we first logged in to our telnet session.
 
