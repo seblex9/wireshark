@@ -110,3 +110,29 @@ One thing to notice here is that my login name, 'seblex9', has every letter doub
 The red represents what we send to the server and the blue is what the server sends us back.
 
 What about the password? You'll notice that's only in red. Well, what telnet does is it echoes back to us everything we are supposed to see on our screen. But you'll recall when inputting a password in Unix based systems, you do not actually see what you're typing. In other words, the server never send our password back to us, so the letters are red to represent what we sent.
+
+## Capturing and Analyzing SSH Sessions
+
+So far we have looked at unencrypted sources of traffic. Now let's look at encrypted, this means text is encrypted with an algorithm and a key, resulting in cyphertext which can only be viewed in its original form if it's decrypted with the correct key. This is the simplest form of encryption.
+
+This is brings to SSH. SSH is used for the same purpose as telnet, to access and manage devices remotely. Unlike telnet, it is secure. SSH uses port 22.
+
+SSH uses the security protocol CLS, same one that HTTPS uses. You may have heard of SSL. This is the deprecated version of CLS.
+
+We will generate our SSH traffic the same way with did with telnet, via the powershell.
+
+This time, instead of using a capture filter to only catch traffic on port 22, let's just capture all the traffic that comes through. We'll do this with the following filter:
+
+![Figure 18](/img/capture18.png 'Figure 18')
+
+Now let's do something interesting. We will first login to the server with telnet, log out, and then log in again with SSH. For purposes of brevity, screenshots for this are ommitted. Next, let's look in Wireshark. Can Wireshark tell that we in effect had two different "conversations"?
+
+In Wireshark, we can go to Statistics, then Conversations. Since both SSH and telnet use TCP, let's click on the TCP tab. And here we see the TCP tab shows us we had two conversations. Also, in the Port column, we see the ports for our telnet and SSH sessions, shown by ports 23 and 22, respectively.
+
+![Figure 19](/img/capture19.png 'Figure 19')
+
+If we click on the row for our telnet session and click 'follow stream' on the bottom, we once again see the entire unencrypted output, same as we got in the telnet session above.
+
+Doing the same with the SSH session, we see everything is encrypted:
+
+![Figure 20](/img/capture20.png 'Figure 20')
