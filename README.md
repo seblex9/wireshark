@@ -213,6 +213,6 @@ And as you see, everything has been unencrypted.
 
 ## Contact
 
-For further inquiries, professional networking, or in-depth discussions on network security and protocol analysis, please don't hesitate to connect with me on LinkedIn at linkedin.com/in/seblex.
+For further inquiries, professional networking, or in-depth discussions on network security and protocol analysis, please don't hesitate to connect with me on LinkedIn at [linkedin.com/in/seblex/](linkedin.com/in/seblex).
 
 [Back to Top](#table-of-contents)
